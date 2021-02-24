@@ -9,7 +9,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    归档: 2021/2 |  lstoryzx
+    LYOCR-表格识别 |  lstoryzx
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -39,167 +39,230 @@
       
     <main class="content on">
       <section class="outer">
-  
-  <ul class="ads">
+  <article
+  id="post-LYOCR-表格识别"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
     
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  LYOCR-表格识别
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2021/02/24/LYOCR-%E8%A1%A8%E6%A0%BC%E8%AF%86%E5%88%AB/" class="article-date">
+  <time datetime="2021-02-24T10:43:58.000Z" itemprop="datePublished">2021-02-24</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/LYOCR/">LYOCR</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">945</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">3 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>关于表格识别，落叶ocr支持调用百度和腾讯的表格识别接口，假设已经在百度智能云与腾讯云中开通了相关服务并已经将密钥填入落叶ocr当中。处理重要数据（商业数据、机密数据或其它不能泄露的数据）请不要使用落叶ocr！</p>
+<span id="more"></span>
+
+<h2 id="百度表格识别："><a href="#百度表格识别：" class="headerlink" title="百度表格识别："></a>百度表格识别：</h2><p>落叶ocr调用的是百度异步表格识别，百度的这个表格识别分为两个接口，一个是提交请求接口另一个是获取结果接口，换句话说就是先把数据提交到服务器，但是服务器识别是需要时间的，在识别完成之后，需要再从服务器获取识别的结果，那么问题来了，我怎么知道服务器啥时候能识别完成，于是在开发过程中我用一些复杂的表格做了测试，并将这个识别过程的时间设定为7秒，也就是说给服务器提交数据之后，等待7秒再次向服务器发送获取结果的请求，所以在落叶ocr当中调用百度表格识别，至少需要等待7秒才能看到返回的结果（通常是10秒左右）。</p>
+<p>在落叶ocr中使用百度表格识别返回的结果是识别后的表格下载地址。你需要复制这个链接到下载器或者浏览器当中，将表格下载到本地查看识别结果。如果你等了好久没有返回下载地址，那说明你的表格实在是太复杂了（假设你填入的api没问题），7秒不够服务器给出识别结果，这时候请你换用腾讯表格识别或者另寻其它方法。</p>
+<p>下面给出调用百度表格识别的例子。</p>
+<p>要识别的表格如下图所示。</p>
+<p><img src="https://s3.ax1x.com/2021/01/29/yPFjwd.png"></p>
+<p>调用百度表格识别后得到的结果如下图所示。</p>
+<p><img src="https://s3.ax1x.com/2021/01/29/yPkYkR.png"></p>
+<p>复制下载地址将识别后的结果保存到本地并打开，下图即为识别的结果。</p>
+<p><img src="https://s3.ax1x.com/2021/01/29/yPk7As.png"></p>
+<h2 id="腾讯表格识别："><a href="#腾讯表格识别：" class="headerlink" title="腾讯表格识别："></a>腾讯表格识别：</h2><p>落叶ocr调用腾讯表格识别v2，和百度接口不同的是这个不用等很久，腾讯表格识别返回的结果是<u>进过base64编码后的excel数据</u>（这真的是编码后的数据不是乱码┑(￣Д ￣)┍）。如果你有能力，那么可用对这些数据解码得到excel。但这显然不是一种比较大众的方法，落叶ocr调用腾讯表格识别接口后，根据得到结果中的json数据，对其整理保存为excel，文件名为当时的时间，生成的excel文件保存在落叶ocr软件目录下的Table文件夹内（所以说要记住在磁盘中存放软件的位置，好吧如果你真的忘了，那面右键桌面上的快捷方式，点击属性，然后打开文件所在位置也能找到。啥？你没有在桌面上放快捷方式？那我也没办法，还是努力回忆保存位置吧）</p>
+<blockquote>
+<p>简而言之，腾讯表格识别返回的结果是经过base64编码后的excel数据，而落叶ocr会自动根据返回的json数据生成一个excel，这个excel文件保存在落叶ocr软件目录下的Table文件夹内。文件名就是当时的时间。</p>
+</blockquote>
+<p>还用上门百度表格识别示例中的表格，来试试腾讯表格识别。</p>
+<p>选择腾讯表格识别，之后得到的结果如下图所示。</p>
+<p><img src="https://s3.ax1x.com/2021/01/29/yPZKUJ.png"></p>
+<p>然后进入软件目录中的Table文件夹，就可以找到excel（文件名是调用的时间）。如下图所示。</p>
+<p><img src="https://s3.ax1x.com/2021/01/29/yPeZRI.png"></p>
+<p><img src="https://s3.ax1x.com/2021/01/29/yPesY9.png"></p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
         <li>
-            <a href="">
-                <img src="" width="" alt="">
-            </a>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
         </li>
-    
-</ul>
-  
-  
-  <article class="articles">
-    
-    
-    <h1 class="page-type-title">2021/2</h1>
-    
-    
-  
-  
-  
-  
-  
-  
-  <div class="archives-wrap">
-    <div class="archive-year-wrap">
-      <a href="/archives/2021" class="archive-year">2021</a>
+      </ul>
     </div>
-    <div class="archives">
-      
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2021/02/24/%E5%85%B3%E4%BA%8E%E8%90%BD%E5%8F%B6ocr/" class="archive-article-date">
-  <time datetime="2021-02-24T10:46:56.000Z" itemprop="datePublished">02/24</time>
-</a>
+    
+    <footer class="article-footer">
        
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2021/02/24/%E5%85%B3%E4%BA%8E%E8%90%BD%E5%8F%B6ocr/"
-    >关于落叶ocr</a> 
-</h2>
- 
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
 
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2021/02/24/LYOCR-%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/" class="archive-article-date">
-  <time datetime="2021-02-24T10:45:56.000Z" itemprop="datePublished">02/24</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2021/02/24/LYOCR-%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8/"
-    >LYOCR-快速使用</a> 
-</h2>
- 
-
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2021/02/24/LYOCR-%E6%96%87%E6%9C%AC%E8%AF%86%E5%88%AB%E4%B8%8E%E7%BF%BB%E8%AF%91/" class="archive-article-date">
-  <time datetime="2021-02-24T10:43:59.000Z" itemprop="datePublished">02/24</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2021/02/24/LYOCR-%E6%96%87%E6%9C%AC%E8%AF%86%E5%88%AB%E4%B8%8E%E7%BF%BB%E8%AF%91/"
-    >LYOCR-文本识别与翻译</a> 
-</h2>
- 
-
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2021/02/24/LYOCR-%E8%A1%A8%E6%A0%BC%E8%AF%86%E5%88%AB/" class="archive-article-date">
-  <time datetime="2021-02-24T10:43:58.000Z" itemprop="datePublished">02/24</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2021/02/24/LYOCR-%E8%A1%A8%E6%A0%BC%E8%AF%86%E5%88%AB/"
-    >LYOCR-表格识别</a> 
-</h2>
- 
-
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2021/02/24/LYOCR-%E5%85%AC%E5%BC%8F%E8%AF%86%E5%88%AB/" class="archive-article-date">
-  <time datetime="2021-02-24T10:43:57.000Z" itemprop="datePublished">02/24</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2021/02/24/LYOCR-%E5%85%AC%E5%BC%8F%E8%AF%86%E5%88%AB/"
-    >LYOCR-公式识别</a> 
-</h2>
- 
-
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2021/02/24/LYOCR-%E4%BA%8C%E7%BB%B4%E7%A0%81%E8%AF%86%E5%88%AB%E4%B8%8E%E8%AE%BE%E7%BD%AE/" class="archive-article-date">
-  <time datetime="2021-02-24T10:43:56.000Z" itemprop="datePublished">02/24</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2021/02/24/LYOCR-%E4%BA%8C%E7%BB%B4%E7%A0%81%E8%AF%86%E5%88%AB%E4%B8%8E%E8%AE%BE%E7%BD%AE/"
-    >LYOCR-二维码识别与设置</a> 
-</h2>
- 
-
-    </header>
-    
-    
-  </div>
-</article>
-      
-      
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2021/02/24/LYOCR-%E8%A1%A8%E6%A0%BC%E8%AF%86%E5%88%AB/" alt="微信分享二维码">
     </div>
-  </div>
-  
-  
+</div>
 
-  
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ocr/" rel="tag">ocr</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tkinter/" rel="tag">tkinter</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2021/02/24/LYOCR-%E6%96%87%E6%9C%AC%E8%AF%86%E5%88%AB%E4%B8%8E%E7%BF%BB%E8%AF%91/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            LYOCR-文本识别与翻译
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2021/02/24/LYOCR-%E5%85%AC%E5%BC%8F%E8%AF%86%E5%88%AB/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">LYOCR-公式识别</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "tcLiffsyRDn7dNOBxaio6jj7-gzGzoHsz",
+    app_key: "03UudAqFV90zXr0harvwi76p",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+     
+</article>
+
 </section>
       <footer class="footer">
   <div class="outer">
@@ -340,6 +403,23 @@
 <script src="/js/lazyload.min.js"></script>
 
 <!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
